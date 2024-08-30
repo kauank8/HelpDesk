@@ -13,18 +13,19 @@ import farias.paulino.kauan.HelpDesk.repository.PessoaRepository;
 import farias.paulino.kauan.HelpDesk.repository.TecnicoRepository;
 import farias.paulino.kauan.HelpDesk.services.exceptions.DataIntegrityViolationException;
 import farias.paulino.kauan.HelpDesk.services.exceptions.NotFoundException;
+import jakarta.validation.Valid;
 
 @Service
 public class TecnicoService {
-	
+
 	@Autowired
 	private TecnicoRepository tecnicoRepository;
 	@Autowired
 	private PessoaRepository pessoaRepository;
-	
+
 	public Tecnico findById(Integer id) {
 		Optional<Tecnico> tecnico = tecnicoRepository.findById(id);
-		return tecnico.orElseThrow(()-> new NotFoundException("Tecnico não encontrado"));
+		return tecnico.orElseThrow(() -> new NotFoundException("Tecnico não encontrado"));
 	}
 
 	public List<Tecnico> findAll() {
@@ -38,15 +39,33 @@ public class TecnicoService {
 		return tecnicoRepository.save(tecnico);
 	}
 
+	public Tecnico update(Integer id, @Valid TecnicoDTO tecnicoDTO) {
+		tecnicoDTO.setId(id);
+		Tecnico oldTecnico = tecnicoRepository.findById(id)
+				.orElseThrow(() -> new NotFoundException("Tecnico não encontrado"));
+		verificaCpfEmail(tecnicoDTO);
+		oldTecnico = new Tecnico(tecnicoDTO);
+		return tecnicoRepository.save(oldTecnico);
+	}
+
+	public void delete(Integer id) {
+		Tecnico tecnico = tecnicoRepository.findById(id).orElseThrow(() -> new NotFoundException("Tecnico não encontrado"));
+		if(tecnico.getChamados().size()>0) {
+			throw new DataIntegrityViolationException("Tecnico possui ordens de serviço e não pode ser deletado");
+		}
+		tecnicoRepository.delete(tecnico);
+	}
+
 	private void verificaCpfEmail(TecnicoDTO tecnicoDTO) {
 		Optional<Pessoa> pessoa = pessoaRepository.findByCpf(tecnicoDTO.getCpf());
-		if(pessoa.isPresent() && pessoa.get().getId() != tecnicoDTO.getId()) {
+		if (pessoa.isPresent() && pessoa.get().getId() != tecnicoDTO.getId()) {
 			throw new DataIntegrityViolationException("Cpf ja cadastrado");
 		}
-		
+
 		pessoa = pessoaRepository.findByEmail(tecnicoDTO.getEmail());
-		if(pessoa.isPresent() && pessoa.get().getId() != tecnicoDTO.getId()) {
+		if (pessoa.isPresent() && pessoa.get().getId() != tecnicoDTO.getId()) {
 			throw new DataIntegrityViolationException("Email ja cadastrado");
 		}
 	}
+
 }

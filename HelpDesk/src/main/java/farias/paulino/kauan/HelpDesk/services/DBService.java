@@ -26,14 +26,14 @@ public class DBService {
 	
 	public void instanciaDB() {
 		// Criação de Clientes
-		Cliente cliente1 = new Cliente(null, "João Silva", "123.456.789-00", "joao.silva@example.com", "senha123");
-		Cliente cliente2 = new Cliente(null, "Maria Oliveira", "987.654.321-00", "maria.oliveira@example.com", "senha123");
-		Cliente cliente3 = new Cliente(null, "Carlos Pereira", "555.444.333-22", "carlos.pereira@example.com", "senha123");
+		Cliente cliente1 = new Cliente(null, "João Silva", "55747466038", "joao.silva@example.com", "senha123");
+		Cliente cliente2 = new Cliente(null, "Maria Oliveira", "30666430004", "maria.oliveira@example.com", "senha123");
+		Cliente cliente3 = new Cliente(null, "Carlos Pereira", "34828051058", "carlos.pereira@example.com", "senha123");
 
 		// Criação de Técnicos
-		Tecnico tecnico1 = new Tecnico(null, "Lucas Souza", "111.222.333-44", "lucas.souza@example.com", "senha123");
-		Tecnico tecnico2 = new Tecnico(null, "Ana Costa", "222.333.444-55", "ana.costa@example.com", "senha123");
-		Tecnico tecnico3 = new Tecnico(null, "Paulo Lima", "333.444.555-66", "paulo.lima@example.com", "senha123");
+		Tecnico tecnico1 = new Tecnico(null, "Lucas Souza", "79331248016", "lucas.souza@example.com", "senha123");
+		Tecnico tecnico2 = new Tecnico(null, "Ana Costa", "72088794000", "ana.costa@example.com", "senha123");
+		Tecnico tecnico3 = new Tecnico(null, "Paulo Lima", "05299917058", "paulo.lima@example.com", "senha123");
 
 		// Criação de Chamados
 		Chamado chamado1 = new Chamado(null, Prioridade.ALTA, Status.ABERTO, "Erro no sistema", "Sistema não inicializa", tecnico1, cliente1);
