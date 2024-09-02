@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import farias.paulino.kauan.HelpDesk.DTO.ClienteDTO;
@@ -22,7 +23,8 @@ public class ClienteService {
 	private ClienteRepository clienteRepository;
 	@Autowired
 	private PessoaRepository pessoaRepository;
-
+	@Autowired
+	private BCryptPasswordEncoder encode;
 	public Cliente findById(Integer id) {
 		Optional<Cliente> cliente = clienteRepository.findById(id);
 		return cliente.orElseThrow(() -> new NotFoundException("Cliente não encontrado"));
@@ -34,6 +36,7 @@ public class ClienteService {
 
 	public Cliente create(ClienteDTO clienteDTO) {
 		clienteDTO.setId(null);
+		clienteDTO.setSenha(encode.encode(clienteDTO.getSenha()));
 		verificaCpfEmail(clienteDTO);
 		Cliente cliente = new Cliente(clienteDTO);
 		return clienteRepository.save(cliente);
