@@ -9,6 +9,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -20,11 +21,14 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import farias.paulino.kauan.HelpDesk.security.JWTAuthenticatorFilter;
+import farias.paulino.kauan.HelpDesk.security.JWTAuthorizationFilter;
 import farias.paulino.kauan.HelpDesk.security.JWTUtil;
 import farias.paulino.kauan.HelpDesk.services.UserDetailsServiceImpl;
 
+@SuppressWarnings("deprecation")
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig{
 	private static final String[] PUBLIC_MATCHERS = {"/h2console/**"};
 	
@@ -50,7 +54,7 @@ public class SecurityConfig{
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             );
         http.addFilter(new JWTAuthenticatorFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtUtil));
-
+        http.addFilter(new JWTAuthorizationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtUtil, userDetailsServiceImpl));
         return http.build();
     }
 	
